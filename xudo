@@ -10,13 +10,12 @@
 
 
 # {{{ Binaries
-which=$( which which )
-basename=$( which basename )
-xauth=$( ${which} xauth )
-id=$( $which id )
-sudo=$( $which sudo )
-id=$( $which id )
-setfacl=$( $which setfacl )
+which=$( which which )       ; [[ -z ${which} ]]    && echo "which not found." && exit
+basename=$( which basename ) ; [[ -z ${basename} ]] && echo "basename not found." && exit
+xauth=$( ${which} xauth )    ; [[ -z ${xauth} ]]    && echo "xauth not found." && exit
+id=$( $which id )            ; [[ -z ${id} ]]       && echo "id not found." && exit
+sudo=$( $which sudo )        ; [[ -z ${sudo} ]]     && echo "sudo not found." && exit
+setfacl=$( $which setfacl )  ; [[ -z ${setfacl} ]]  && echo "setfacl not found." && exit
 # }}}
 
 # {{{ Functions
