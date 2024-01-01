@@ -92,14 +92,14 @@ if [[ "x${do_agent_forwarding}" == "xtrue" && ! -z "${SSH_AUTH_SOCK}" ]] ; then
     if [[ $(uname) == "FreeBSD" ]] ; then
         ${setfacl} -m u:${target_user}:rwxp::allow "${ssh_auth_sock}"
     else
-        ${setfacl} -m u:${target_user}:rwx "${ssh_auth_sock}"
+        ${setfacl} --no-mask -m u:${target_user}:rwx "${ssh_auth_sock}"
     fi
     sock_dir="$( dirname "${ssh_auth_sock}" )"
     if [[ ! "x${sock_dir}" == "x${HOME}/.ssh" ]] ; then
         if [[ $(uname) == "FreeBSD" ]] ; then
             ${setfacl} -m u:${target_user}:rxp::allow "${sock_dir}"
         else
-            ${setfacl} -m u:${target_user}:rx "${sock_dir}"
+            ${setfacl} --no-mask -m u:${target_user}:rx "${sock_dir}"
         fi
     fi
 fi
