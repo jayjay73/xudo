@@ -83,8 +83,8 @@ if ! ${id} ${target_user} >/dev/null 2>&1 ; then
 fi
 
 if [[ "x${do_X_forwarding}" == "xtrue" ]] ; then
-    cookie=$( ${xauth} list ${DISPLAY} )
-    ${sudo} -u ${target_user} -i ${xauth} add ${cookie} 2>/dev/null
+    cookie=$( ${xauth} list "${DISPLAY}" )
+    ${sudo} -u ${target_user} -i ${xauth} add "${cookie}" 2>/dev/null
 fi
 
 if [[ "x${do_agent_forwarding}" == "xtrue" && ! -z "${SSH_AUTH_SOCK}" ]] ; then
@@ -111,4 +111,4 @@ fi
 # Nobody seems to know. This is highly idiotic.
 path_str="PATH=/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin"
 ssh_auth_sock_str="${ssh_auth_sock+SSH_AUTH_SOCK=${ssh_auth_sock}}"
-exec ${sudo} ${path_str} GIT_AUTHOR_EMAIL="${GIT_AUTHOR_EMAIL}" GIT_AUTHOR_NAME="${GIT_AUTHOR_NAME}" GIT_COMMITTER_EMAIL="${GIT_COMMITTER_EMAIL}" GIT_COMMITTER_NAME="${GIT_COMMITTER_NAME}" ${ssh_auth_sock_str} "$@"
+exec ${sudo} ${path_str} GIT_AUTHOR_EMAIL="${GIT_AUTHOR_EMAIL}" GIT_AUTHOR_NAME="${GIT_AUTHOR_NAME}" GIT_COMMITTER_EMAIL="${GIT_COMMITTER_EMAIL}" GIT_COMMITTER_NAME="${GIT_COMMITTER_NAME}" "${ssh_auth_sock_str}" "$@"
