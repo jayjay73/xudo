@@ -14,15 +14,13 @@
 <p align="center"><b>TL;DR: sudo, but X and password- (and passphrase-) less ssh still work</b>
 </p>
 
-## 📝 Table of Contents
+## Table of Contents
 
 - [About](#about)
-- [Getting Started](#getting_started)
-  - [Prerequisites](#prerequisites)
-  - [Installing](#installing)
-  - [Testing the install](#test_install)
+- [Prerequisites](#prerequisites)
+- [Installing](#installing)
+- [Testing the install](#test_install)
 - [Usage](#usage)
-  - [Example](#example)
 - [Deployment](#deployment)
 - [Built Using](#built_using)
 - [Authors](#authors)
@@ -44,9 +42,7 @@ A common practise is to copy the MIT-magic-cookie by hand or set permissions on 
 This script does exactly that: it copys over the MIT-magic-cookie and makes the socket pointed to by SSH_AUTH_SOCK available to your target user (the user you sudo to).
 
 
-## 🏁 Getting Started <a name = "getting_started"></a>
-
-### Prerequisites <a name="prerequisites"></a>
+## Prerequisites <a name="prerequisites"></a>
 
 You need the following binaries on your system:
 
@@ -54,25 +50,25 @@ You need the following binaries on your system:
 - xauth: only if you want to forward X authentication - usually in a package of the same name
 - setfacl: only if you want to forward SSH agents, usually found in an ACL package 
 
-### Installing <a name="installing"></a>
+## Installing <a name="installing"></a>
 
-#### Check out the repo:
+### Check out the repo:
 ```
 git clone https://github.com/jayjay73/xudo.git
 ```
-#### Copy the script to a directory in your path:
+### Copy the script to a directory in your path:
 ```
 cp xudo ~/bin/xudo
 ```
-#### make it executable:
+### make it executable:
 ```
 chmod +x ~/bin/xudo
 ```
-#### sudo to root taking your keys and X auth with you:
+### sudo to root taking your keys and X auth with you:
 ```
 xudo -ax -iu root
 ```
-#### Test if it works: <a name="test_install"></a>
+### Test if it works: <a name="test_install"></a>
 ```
 xclock &
 ssh someuser@another.host
@@ -80,7 +76,7 @@ ssh someuser@another.host
 both should now work without any further interruption.
 
 
-## 🎈 Usage <a name="usage"></a>
+## Usage <a name="usage"></a>
 
 ```
 xudo [-ax] [sudo options|command]
@@ -104,19 +100,21 @@ xudo -a -iu ansible
 
 Here -a is an option to xudo meaning forward SSH authentication, whereas -iu are options to sudo meaning perform a login (-i) as user (-u) ansible.
 
-## 🚀 Deployment <a name = "deployment"></a>
+## Deployment <a name = "deployment"></a>
 
 Feel free to write a package or an Ansible playbook to get it deployed easily 🙂
 
-## ⛏️ Built Using <a name = "built_using"></a>
+##  Built Using <a name = "built_using"></a>
 
 - Bash
+- Coffee
+- Laziness
 
-## ✍️ Authors <a name = "authors"></a>
+## Authors <a name = "authors"></a>
 
 - [@jayjay73](https://github.com/jayjay73)
 
 
-## 🎉 Acknowledgements <a name = "acknowledgement"></a>
+## Acknowledgements <a name = "acknowledgement"></a>
 
 - All the DBAs that would patiently go through the motions of copying over their MIT-magic-cookies to install Oracle DB. I took pity on you.
