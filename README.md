@@ -18,8 +18,12 @@
 
 - [About](#about)
 - [Getting Started](#getting_started)
-- [Deployment](#deployment)
+  - [Prerequisites](#prerequisites)
+  - [Installing](#installing)
+  - [Testing the install](#test_install)
 - [Usage](#usage)
+  - [Example](#example)
+- [Deployment](#deployment)
 - [Built Using](#built_using)
 - [TODO](../TODO.md)
 - [Contributing](../CONTRIBUTING.md)
@@ -44,7 +48,7 @@ This script does exactly that: it copys over the MIT-magic-cookie and makes the 
 
 ## 🏁 Getting Started <a name = "getting_started"></a>
 
-### Prerequisites
+### Prerequisites <a name="prerequisites"></a>
 
 You need the following binaries on your system:
 
@@ -52,7 +56,7 @@ You need the following binaries on your system:
 - xauth: only if you want to forward X authentication - usually in a package of the same name
 - setfacl: only if you want to forward SSH agents, usually found in an ACL package 
 
-### Installing
+### Installing <a name="installing"></a>
 
 #### Check out the repo:
 ```
@@ -70,7 +74,7 @@ chmod +x ~/bin/xudo
 ```
 xudo -ax -iu root
 ```
-#### Test if it works:
+#### Test if it works: <a name="test_install"></a>
 ```
 xclock &
 ssh someuser@another.host
@@ -95,7 +99,7 @@ For the options passed on to sudo see sudo's man page.
 
 xudo only takes short options (with one dash "-"). Long options (with two dashes "--") are not supported.
 
-### Example:
+### Example: <a name="example"></a>
 ```
 xudo -a -iu ansible
 ```
@@ -104,7 +108,7 @@ Here -a is an option to xudo meaning forward SSH authentication, whereas -iu are
 
 ## 🚀 Deployment <a name = "deployment"></a>
 
-Feel free to write a package or an Ansible playbook to get deployed easily 🙂
+Feel free to write a package or an Ansible playbook to get it deployed easily 🙂
 
 ## ⛏️ Built Using <a name = "built_using"></a>
 
