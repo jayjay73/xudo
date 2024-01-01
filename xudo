@@ -8,6 +8,8 @@
 # Author: Jan Jaeger
 #
 
+# These environment variables will be carried over
+preserve_env="GIT_AUTHOR_EMAIL,GIT_AUTHOR_NAME,GIT_COMMITTER_EMAIL,GIT_COMMITTER_NAME"
 
 # {{{ Binaries
 which=$( which which )       ; [[ -z ${which} ]]    && echo "which not found." && exit 1
@@ -83,7 +85,9 @@ fi
 if [[ "x${do_X_forwarding}" == "xtrue" ]] ; then
     xauth=$( ${which} xauth )    ; [[ -z ${xauth} ]]    && echo "xauth not found." && exit 1
     cookie=$( ${xauth} list "${DISPLAY}" )
-    ${sudo} -u ${target_user} -i ${xauth} add "${cookie}" 2>/dev/null
+    ${sudo} -u ${target_user} -i ${xauth} add ${cookie} 2>/dev/null
+    # DISPLAY magically shows up on it's own
+    #preserve_env="${preserve_env+${preserve_env},}${DISPLAY}"
 fi
 
 if [[ "x${do_agent_forwarding}" == "xtrue" && ! -z "${SSH_AUTH_SOCK}" ]] ; then
@@ -102,13 +106,9 @@ if [[ "x${do_agent_forwarding}" == "xtrue" && ! -z "${SSH_AUTH_SOCK}" ]] ; then
             ${setfacl} --no-mask -m u:${target_user}:rx "${sock_dir}"
         fi
     fi
+    preserve_env="${preserve_env+${preserve_env},}${SSH_AUTH_SOCK}"
 fi
 
-# set PATH to something sane. Now, this should not be necessary,
-# except that sudo -i, unlike sudo su - or an actual login,  does
-# NOT set /usr/local/bin in $PATH. Reason: /usr/local/bin does not
-# appear anywhere in the usual login scripts. Where does it get set?
-# Nobody seems to know. This is highly idiotic.
-path_str="PATH=/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin"
-ssh_auth_sock_str="${ssh_auth_sock+SSH_AUTH_SOCK=${ssh_auth_sock}}"
-exec ${sudo} ${path_str} GIT_AUTHOR_EMAIL="${GIT_AUTHOR_EMAIL}" GIT_AUTHOR_NAME="${GIT_AUTHOR_NAME}" GIT_COMMITTER_EMAIL="${GIT_COMMITTER_EMAIL}" GIT_COMMITTER_NAME="${GIT_COMMITTER_NAME}" "${ssh_auth_sock_str}" "$@"
+preserve_env="${preserve_env+--preserve-env=${preserve_env}}"
+echo "$preserve_env"
+exec ${sudo} ${preserve_env} "$@"
