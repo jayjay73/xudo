@@ -37,12 +37,10 @@ fi
 
 case $1 in
     -a)
-    setfacl=$( $which setfacl )  ; [[ -z ${setfacl} ]]  && echo "setfacl not found." && exit 1
     do_agent_forwarding="true"
     shift
     ;;
     -x)
-    xauth=$( ${which} xauth )    ; [[ -z ${xauth} ]]    && echo "xauth not found." && exit 1
     do_X_forwarding="true"
     shift
     ;;
@@ -83,11 +81,13 @@ if ! ${id} ${target_user} >/dev/null 2>&1 ; then
 fi
 
 if [[ "x${do_X_forwarding}" == "xtrue" ]] ; then
+    xauth=$( ${which} xauth )    ; [[ -z ${xauth} ]]    && echo "xauth not found." && exit 1
     cookie=$( ${xauth} list "${DISPLAY}" )
     ${sudo} -u ${target_user} -i ${xauth} add "${cookie}" 2>/dev/null
 fi
 
 if [[ "x${do_agent_forwarding}" == "xtrue" && ! -z "${SSH_AUTH_SOCK}" ]] ; then
+    setfacl=$( $which setfacl )  ; [[ -z ${setfacl} ]]  && echo "setfacl not found." && exit 1
     ssh_auth_sock="${SSH_AUTH_SOCK}"
     if [[ $(uname) == "FreeBSD" ]] ; then
         ${setfacl} -m u:${target_user}:rwxp::allow "${ssh_auth_sock}"
