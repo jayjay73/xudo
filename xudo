@@ -106,9 +106,9 @@ if [[ "x${do_agent_forwarding}" == "xtrue" && ! -z "${SSH_AUTH_SOCK}" ]] ; then
             ${setfacl} --no-mask -m u:${target_user}:rx "${sock_dir}"
         fi
     fi
-    preserve_env="${preserve_env+${preserve_env},}${SSH_AUTH_SOCK}"
+    preserve_env="${preserve_env+${preserve_env},}SSH_AUTH_SOCK"
 fi
 
 preserve_env="${preserve_env+--preserve-env=${preserve_env}}"
-echo "$preserve_env"
+#echo "$preserve_env"
 exec ${sudo} ${preserve_env} "$@"
