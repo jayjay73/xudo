@@ -64,7 +64,7 @@ git clone https://github.com/jayjay73/xudo.git
 ```
 #### Copy the script to a directory in your path:
 ```
-cp xudo ~/bin
+cp xudo ~/bin/xudo
 ```
 #### make it executable:
 ```
