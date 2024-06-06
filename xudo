@@ -93,6 +93,25 @@ fi
 if [[ "x${do_agent_forwarding}" == "xtrue" && ! -z "${SSH_AUTH_SOCK}" ]] ; then
     setfacl=$( $which setfacl )  ; [[ -z ${setfacl} ]]  && echo "setfacl not found." && exit 1
     ssh_auth_sock="${SSH_AUTH_SOCK}"
+
+    # remove stale sessions
+    find /tmp/xudo-* -maxdepth 0 > /dev/null 2>&1 &&
+        find /tmp/xudo-* -name sudo.pid -user $USER -exec sh -c 'ps -p $(cat {}) > /dev/null || rm -r $(dirname {})' \;
+
+    {
+        while ps -p $$ > /dev/null 2>&1 ; do 
+            sleep 5
+        done
+        find /tmp/xudo-* -maxdepth 0 > /dev/null 2>&1 &&
+          find /tmp/xudo-* -name sudo.pid -user $USER -exec sh -c 'ps -p $(cat {}) > /dev/null || rm -r $(dirname {})' \;
+    } &
+
+    xudo_tmpdir=$( mktemp -td xudo-XXXXXXXXXX )
+    target_user_ssh_auth_sock="${xudo_tmpdir}/agent.sock"
+    ln -s ${ssh_auth_sock} ${target_user_ssh_auth_sock}
+    echo $$ > ${xudo_tmpdir}/sudo.pid
+    echo ${target_user} > ${xudo_tmpdir}/sudo.user
+
     if [[ $(uname) == "FreeBSD" ]] ; then
         ${setfacl} -m u:${target_user}:rwxp::allow "${ssh_auth_sock}"
     else
@@ -104,8 +123,10 @@ if [[ "x${do_agent_forwarding}" == "xtrue" && ! -z "${SSH_AUTH_SOCK}" ]] ; then
             ${setfacl} -m u:${target_user}:rxp::allow "${sock_dir}"
         else
             ${setfacl} --no-mask -m u:${target_user}:rx "${sock_dir}"
+            ${setfacl} -m u:${target_user}:rx ${xudo_tmpdir}
         fi
     fi
+    SSH_AUTH_SOCK="${target_user_ssh_auth_sock}"
     preserve_env="${preserve_env+"${preserve_env},"}SSH_AUTH_SOCK"
 fi
 
