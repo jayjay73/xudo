@@ -106,7 +106,11 @@ if [[ "x${do_agent_forwarding}" == "xtrue" && ! -z "${SSH_AUTH_SOCK}" ]] ; then
           find /tmp/xudo-* -name sudo.pid -user $USER -exec sh -c 'ps -p $(cat {}) > /dev/null || rm -r $(dirname {})' \;
     } &
 
-    xudo_tmpdir=$( mktemp -td xudo-XXXXXXXXXX )
+    if [[ $(uname) == "FreeBSD" ]] ; then
+        xudo_tmpdir=$( mktemp -d /tmp/xudo-XXXXXXXXXX )
+    else
+        xudo_tmpdir=$( mktemp -td xudo-XXXXXXXXXX )
+    fi
     target_user_ssh_auth_sock="${xudo_tmpdir}/agent.sock"
     ln -s ${ssh_auth_sock} ${target_user_ssh_auth_sock}
     echo $$ > ${xudo_tmpdir}/sudo.pid
@@ -121,9 +125,10 @@ if [[ "x${do_agent_forwarding}" == "xtrue" && ! -z "${SSH_AUTH_SOCK}" ]] ; then
     if [[ ! "x${sock_dir}" == "x${HOME}/.ssh" ]] ; then
         if [[ $(uname) == "FreeBSD" ]] ; then
             ${setfacl} -m u:${target_user}:rxp::allow "${sock_dir}"
+            ${setfacl} -m u:${target_user}:rxp::allow "${xudo_tmpdir}"
         else
             ${setfacl} -m u:${target_user}:rx "${sock_dir}"
-            ${setfacl} -m u:${target_user}:rx ${xudo_tmpdir}
+            ${setfacl} -m u:${target_user}:rx "${xudo_tmpdir}"
         fi
     fi
     SSH_AUTH_SOCK="${target_user_ssh_auth_sock}"
