@@ -95,15 +95,12 @@ if [[ "x${do_agent_forwarding}" == "xtrue" && ! -z "${SSH_AUTH_SOCK}" ]] ; then
     ssh_auth_sock="${SSH_AUTH_SOCK}"
 
     # remove stale sessions
-    find /tmp/xudo-* -maxdepth 0 > /dev/null 2>&1 &&
-        find /tmp/xudo-* -name sudo.pid -user $USER -exec sh -c 'ps -p $(cat {}) > /dev/null || rm -r $(dirname {})' \;
-
+    find /tmp/xudo-* -name sudo.pid -user $USER -exec sh -c 'ps -p $(cat {}) > /dev/null || rm -r $(dirname {})' \; > /dev/null 2>&1
     {
         while ps -p $$ > /dev/null 2>&1 ; do 
             sleep 5
         done
-        find /tmp/xudo-* -maxdepth 0 > /dev/null 2>&1 &&
-          find /tmp/xudo-* -name sudo.pid -user $USER -exec sh -c 'ps -p $(cat {}) > /dev/null || rm -r $(dirname {})' \;
+        find /tmp/xudo-* -name sudo.pid -user $USER -exec sh -c 'ps -p $(cat {}) > /dev/null || rm -r $(dirname {})' \; > /dev/null 2>&1
     } &
 
     if [[ $(uname) == "FreeBSD" ]] ; then
