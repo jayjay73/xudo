@@ -115,6 +115,8 @@ if [[ "x${do_agent_forwarding}" == "xtrue" && ! -z "${SSH_AUTH_SOCK}" ]] ; then
 
     if [[ $(uname) == "FreeBSD" ]] ; then
         ${setfacl} -m u:${target_user}:rwxp::allow "${ssh_auth_sock}"
+    elif [[ $(uname) == "SunOS" ]] ; then
+        /usr/bin/chmod A+user:${target_user}:rwx:allow "${ssh_auth_sock}"
     else
         ${setfacl} -m u:${target_user}:rwx "${ssh_auth_sock}"
     fi
@@ -123,6 +125,9 @@ if [[ "x${do_agent_forwarding}" == "xtrue" && ! -z "${SSH_AUTH_SOCK}" ]] ; then
         if [[ $(uname) == "FreeBSD" ]] ; then
             ${setfacl} -m u:${target_user}:rxp::allow "${sock_dir}"
             ${setfacl} -m u:${target_user}:rxp::allow "${xudo_tmpdir}"
+        elif [[ $(uname) == "SunOS" ]] ; then
+            /usr/bin/chmod A+user:${target_user}:rx:allow "${sock_dir}"
+            /usr/bin/chmod A+user:${target_user}:rx:allow "${xudo_tmpdir}"
         else
             ${setfacl} -m u:${target_user}:rx "${sock_dir}"
             ${setfacl} -m u:${target_user}:rx "${xudo_tmpdir}"
